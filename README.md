@@ -85,9 +85,9 @@ app/src/main/java/ru/homebuhg/
 | Этап | Статус |
 |---|---|
 | 0. Setup проекта | ✅ |
-| 1. Core data (Room) | 🔜 |
-| 2. MVP UI | ⬜ |
-| 3. Бюджеты + регулярки | ⬜ |
+| 1. Core data (Room) | ✅ |
+| 2. MVP UI | ✅ |
+| 3. Бюджеты + регулярки | 🔜 |
 | 4. Отчёты | ⬜ |
 | 5. Firebase sync | ⬜ |
 | 6. Сканер QR ФНС | ⬜ |
