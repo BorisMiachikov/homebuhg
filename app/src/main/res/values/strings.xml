@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Домашняя бухгалтерия</string>
+
+    <!-- Навигация -->
+    <string name="nav_home">Главная</string>
+    <string name="nav_operations">Операции</string>
+    <string name="nav_accounts">Счета</string>
+    <string name="nav_reports">Отчёты</string>
+    <string name="nav_settings">Настройки</string>
+
+    <!-- Общие -->
+    <string name="action_add">Добавить</string>
+    <string name="action_save">Сохранить</string>
+    <string name="action_cancel">Отмена</string>
+    <string name="action_delete">Удалить</string>
+    <string name="action_edit">Изменить</string>
+    <string name="action_back">Назад</string>
+
+    <!-- Типы операций -->
+    <string name="op_expense">Расход</string>
+    <string name="op_income">Доход</string>
+    <string name="op_transfer">Перевод</string>
+
+    <!-- Типы счетов -->
+    <string name="account_card_debit">Дебетовая карта</string>
+    <string name="account_card_credit">Кредитная карта</string>
+    <string name="account_cash">Наличные</string>
+
+    <!-- Главная -->
+    <string name="home_total_balance">Общий баланс</string>
+    <string name="home_recent_operations">Последние операции</string>
+    <string name="home_active_budgets">Активные бюджеты</string>
+    <string name="home_quick_add">Быстрое добавление</string>
+
+    <!-- Пусто -->
+    <string name="empty_no_operations">Пока нет операций</string>
+    <string name="empty_no_accounts">Добавьте свой первый счёт</string>
+</resources>

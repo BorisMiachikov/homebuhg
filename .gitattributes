@@ -1,0 +1,15 @@
+# Normalize line endings for all text files
+* text=auto eol=lf
+
+# Force binary for build artifacts
+*.jar binary
+*.apk binary
+*.aab binary
+*.keystore binary
+*.jks binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
