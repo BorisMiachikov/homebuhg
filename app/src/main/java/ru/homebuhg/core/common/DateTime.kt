@@ -28,3 +28,4 @@ private val ruTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale("ru", 
 fun Long.formatRuDay(): String = toLocalDateTime().toLocalDate().format(ruDayFormatter)
 fun Long.formatRuShort(): String = toLocalDateTime().toLocalDate().format(ruShortFormatter)
 fun Long.formatRuTime(): String = toLocalDateTime().toLocalTime().format(ruTimeFormatter)
+fun LocalDate.formatRuDay(): String = format(ruDayFormatter)

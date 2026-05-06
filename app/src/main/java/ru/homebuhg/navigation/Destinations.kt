@@ -16,8 +16,8 @@ sealed interface Destination {
     @Serializable data object Reports : Destination
     @Serializable data object Settings : Destination
 
-    @Serializable data class OperationEdit(val operationId: Long? = null) : Destination
-    @Serializable data class AccountEdit(val accountId: Long? = null) : Destination
+    @Serializable data class OperationEdit(val operationId: String? = null) : Destination
+    @Serializable data class AccountEdit(val accountId: String? = null) : Destination
     @Serializable data object Categories : Destination
     @Serializable data object Budgets : Destination
     @Serializable data object Scanner : Destination
