@@ -11,6 +11,9 @@ interface RecurringRuleDao {
     @Query("SELECT * FROM recurring_rules WHERE householdId = :householdId AND isActive = 1")
     fun observe(householdId: String): Flow<List<RecurringRuleEntity>>
 
+    @Query("SELECT * FROM recurring_rules WHERE id = :id")
+    suspend fun getById(id: String): RecurringRuleEntity?
+
     @Query("SELECT * FROM recurring_rules WHERE householdId = :householdId AND isActive = 1 AND nextRunAt <= :nowMs")
     suspend fun getDue(householdId: String, nowMs: Long): List<RecurringRuleEntity>
 

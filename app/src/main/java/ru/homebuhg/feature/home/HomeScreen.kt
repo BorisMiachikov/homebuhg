@@ -25,6 +25,7 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -96,6 +97,18 @@ fun HomeScreen(
                     }
                 }
             }
+            if (state.budgetItems.isNotEmpty()) {
+                item {
+                    Text(
+                        "Бюджеты",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
+                items(state.budgetItems) { bp ->
+                    BudgetProgressItem(bp)
+                }
+            }
             if (state.recentTransactions.isNotEmpty()) {
                 item {
                     Text(
@@ -149,11 +162,7 @@ private fun AccountsRow(accounts: List<AccountEntity>) {
         items(accounts, key = { it.id }) { account ->
             ElevatedCard(modifier = Modifier.width(160.dp)) {
                 Column(Modifier.padding(16.dp)) {
-                    Text(
-                        account.name,
-                        style = MaterialTheme.typography.labelLarge,
-                        maxLines = 1
-                    )
+                    Text(account.name, style = MaterialTheme.typography.labelLarge, maxLines = 1)
                     Spacer(Modifier.height(8.dp))
                     Text(
                         Money(account.balanceMinor).format(),
@@ -168,6 +177,34 @@ private fun AccountsRow(accounts: List<AccountEntity>) {
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun BudgetProgressItem(bp: HomeViewModel.BudgetProgress) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(bp.categoryName, style = MaterialTheme.typography.bodyMedium)
+            Text(
+                "${Money(bp.spentMinor).format()} / ${Money(bp.limitMinor).format()}",
+                style = MaterialTheme.typography.bodySmall,
+                color = if (bp.progress >= 1f) MaterialTheme.colorScheme.error
+                else MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Spacer(Modifier.height(4.dp))
+        LinearProgressIndicator(
+            progress = { bp.progress.coerceIn(0f, 1f) },
+            modifier = Modifier.fillMaxWidth(),
+            color = when {
+                bp.progress >= 1f -> MaterialTheme.colorScheme.error
+                bp.progress >= 0.9f -> MaterialTheme.colorScheme.tertiary
+                else -> MaterialTheme.colorScheme.primary
+            }
+        )
     }
 }
 
@@ -209,6 +246,7 @@ private fun AccountType.label() = when (this) {
     AccountType.CARD_CREDIT -> "Кредитная"
     AccountType.CASH -> "Наличные"
 }
+
 private fun TransactionType.label() = when (this) {
     TransactionType.EXPENSE -> "Расход"
     TransactionType.INCOME -> "Доход"

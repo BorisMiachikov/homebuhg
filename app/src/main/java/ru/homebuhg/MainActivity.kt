@@ -10,11 +10,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.homebuhg.core.designsystem.theme.HomeBuhgTheme
+import ru.homebuhg.core.domain.RecurringWorker
 import ru.homebuhg.core.domain.SessionManager
 import ru.homebuhg.navigation.AppNavHost
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -31,6 +36,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch { sessionManager.ensureLocalSession() }
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "recurring_work",
+            ExistingPeriodicWorkPolicy.KEEP,
+            PeriodicWorkRequestBuilder<RecurringWorker>(1, TimeUnit.DAYS).build()
+        )
 
         setContent {
             HomeBuhgTheme {

@@ -71,9 +71,12 @@ class AccountEditViewModel @Inject constructor(
         }
     }
 
+    @JvmName("changeName")
     fun setName(v: String) { name = v; nameError = false }
+    @JvmName("changeType")
     fun setType(t: AccountType) { type = t }
     fun setInitialBalance(v: String) { initialBalanceText = v }
+    @JvmName("changeColor")
     fun setColor(c: Int) { color = c }
 
     fun save() {

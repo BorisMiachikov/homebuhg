@@ -20,6 +20,9 @@ sealed interface Destination {
     @Serializable data class AccountEdit(val accountId: String? = null) : Destination
     @Serializable data object Categories : Destination
     @Serializable data object Budgets : Destination
+    @Serializable data class BudgetEdit(val budgetId: String? = null) : Destination
+    @Serializable data object RecurringRules : Destination
+    @Serializable data class RecurringRuleEdit(val ruleId: String? = null) : Destination
     @Serializable data object Scanner : Destination
 }
 
