@@ -17,6 +17,7 @@ import androidx.compose.material.icons.outlined.Category
 import androidx.compose.material.icons.outlined.Cloud
 import androidx.compose.material.icons.outlined.CloudDone
 import androidx.compose.material.icons.outlined.CloudOff
+import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.Savings
@@ -57,6 +58,7 @@ fun SettingsScreen(
     onOpenBudgets: () -> Unit,
     onOpenRecurringRules: () -> Unit,
     onOpenSmsRules: () -> Unit,
+    onOpenExport: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -87,6 +89,11 @@ fun SettingsScreen(
                 headlineContent = { Text("Правила SMS") },
                 leadingContent = { Icon(Icons.Outlined.Message, contentDescription = null) },
                 modifier = Modifier.clickable(onClick = onOpenSmsRules)
+            )
+            ListItem(
+                headlineContent = { Text("Экспорт данных") },
+                leadingContent = { Icon(Icons.Outlined.FileDownload, contentDescription = null) },
+                modifier = Modifier.clickable(onClick = onOpenExport)
             )
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))

@@ -30,6 +30,7 @@ import ru.homebuhg.feature.operations.OperationsScreen
 import ru.homebuhg.feature.recurring.RecurringRuleEditScreen
 import ru.homebuhg.feature.recurring.RecurringRulesScreen
 import ru.homebuhg.feature.reports.ReportsScreen
+import ru.homebuhg.feature.export.ExportScreen
 import ru.homebuhg.feature.scanner.ScannerScreen
 import ru.homebuhg.feature.settings.SettingsScreen
 import ru.homebuhg.feature.sms.SmsRuleEditScreen
@@ -85,8 +86,12 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                     onOpenCategories = { navController.navigate(Destination.Categories) },
                     onOpenBudgets = { navController.navigate(Destination.Budgets) },
                     onOpenRecurringRules = { navController.navigate(Destination.RecurringRules) },
-                    onOpenSmsRules = { navController.navigate(Destination.SmsRules) }
+                    onOpenSmsRules = { navController.navigate(Destination.SmsRules) },
+                    onOpenExport = { navController.navigate(Destination.Export) }
                 )
+            }
+            composable<Destination.Export> {
+                ExportScreen(onClose = { navController.popBackStack() })
             }
             composable<Destination.OperationEdit> { entry ->
                 val args = entry.toRoute<Destination.OperationEdit>()
