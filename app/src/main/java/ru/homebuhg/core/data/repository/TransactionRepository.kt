@@ -4,6 +4,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import ru.homebuhg.core.common.nowMillis
+import ru.homebuhg.core.data.database.CategoryTotal
+import ru.homebuhg.core.data.database.MonthlyTotal
 import ru.homebuhg.core.data.database.dao.TransactionDao
 import ru.homebuhg.core.data.database.entity.TransactionEntity
 import ru.homebuhg.core.di.IoDispatcher
@@ -49,4 +51,10 @@ class TransactionRepository @Inject constructor(
 
     suspend fun getModifiedSince(householdId: String, since: Long): List<TransactionEntity> =
         withContext(io) { transactionDao.getModifiedSince(householdId, since) }
+
+    suspend fun monthlyTotals(householdId: String, fromMs: Long, toMs: Long): List<MonthlyTotal> =
+        withContext(io) { transactionDao.monthlyTotals(householdId, fromMs, toMs) }
+
+    suspend fun topExpenseCategories(householdId: String, fromMs: Long, toMs: Long): List<CategoryTotal> =
+        withContext(io) { transactionDao.topExpenseCategories(householdId, fromMs, toMs) }
 }

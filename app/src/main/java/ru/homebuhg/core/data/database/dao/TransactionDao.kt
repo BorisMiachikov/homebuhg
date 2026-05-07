@@ -4,6 +4,8 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
+import ru.homebuhg.core.data.database.CategoryTotal
+import ru.homebuhg.core.data.database.MonthlyTotal
 import ru.homebuhg.core.data.database.entity.TransactionEntity
 
 @Dao
@@ -56,6 +58,40 @@ interface TransactionDao {
         fromMs: Long,
         toMs: Long
     ): Long
+
+    @Query("""
+        SELECT
+            strftime('%Y-%m', datetime(occurredAt/1000, 'unixepoch', 'localtime')) AS month,
+            type,
+            COALESCE(SUM(amountMinor), 0) AS total
+        FROM transactions
+        WHERE householdId = :householdId AND isDeleted = 0
+          AND type IN ('INCOME', 'EXPENSE')
+          AND occurredAt >= :fromMs AND occurredAt <= :toMs
+        GROUP BY month, type
+        ORDER BY month ASC
+    """)
+    suspend fun monthlyTotals(
+        householdId: String,
+        fromMs: Long,
+        toMs: Long
+    ): List<MonthlyTotal>
+
+    @Query("""
+        SELECT categoryId, COALESCE(SUM(amountMinor), 0) AS total
+        FROM transactions
+        WHERE householdId = :householdId AND isDeleted = 0
+          AND type = 'EXPENSE' AND categoryId IS NOT NULL
+          AND occurredAt >= :fromMs AND occurredAt <= :toMs
+        GROUP BY categoryId
+        ORDER BY total DESC
+        LIMIT 8
+    """)
+    suspend fun topExpenseCategories(
+        householdId: String,
+        fromMs: Long,
+        toMs: Long
+    ): List<CategoryTotal>
 
     @Upsert
     suspend fun upsert(transaction: TransactionEntity)
