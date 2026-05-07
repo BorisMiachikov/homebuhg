@@ -29,6 +29,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
+        buildConfigField("boolean", "FIREBASE_ENABLED", "$firebaseEnabled")
     }
 
     buildTypes {
@@ -125,17 +126,15 @@ dependencies {
     implementation(libs.kotlinx.coroutines.play.services)
     implementation(libs.kotlinx.serialization.json)
 
-    // Firebase (опционально, активируется наличием google-services.json)
-    if (firebaseEnabled) {
-        implementation(platform(libs.firebase.bom))
-        implementation(libs.firebase.auth)
-        implementation(libs.firebase.firestore)
-        implementation(libs.firebase.analytics)
-        implementation(libs.firebase.crashlytics)
-        implementation(libs.androidx.credentials)
-        implementation(libs.androidx.credentials.play.services)
-        implementation(libs.google.id)
-    }
+    // Firebase (всегда компилируется; активируется наличием google-services.json)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services)
+    implementation(libs.google.id)
 
     // Camera + ML Kit
     implementation(libs.camerax.core)

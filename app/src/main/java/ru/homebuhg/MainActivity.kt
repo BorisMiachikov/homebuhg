@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import ru.homebuhg.core.designsystem.theme.HomeBuhgTheme
 import ru.homebuhg.core.domain.RecurringWorker
 import ru.homebuhg.core.domain.SessionManager
+import ru.homebuhg.core.sync.SyncWorker
 import ru.homebuhg.navigation.AppNavHost
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -37,10 +38,24 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch { sessionManager.ensureLocalSession() }
 
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+        val wm = WorkManager.getInstance(this)
+
+        wm.enqueueUniquePeriodicWork(
             "recurring_work",
             ExistingPeriodicWorkPolicy.KEEP,
             PeriodicWorkRequestBuilder<RecurringWorker>(1, TimeUnit.DAYS).build()
+        )
+
+        wm.enqueueUniquePeriodicWork(
+            SyncWorker.NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            PeriodicWorkRequestBuilder<SyncWorker>(30, TimeUnit.MINUTES)
+                .setConstraints(
+                    androidx.work.Constraints(
+                        requiredNetworkType = androidx.work.NetworkType.CONNECTED
+                    )
+                )
+                .build()
         )
 
         setContent {
