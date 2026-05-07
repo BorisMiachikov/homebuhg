@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.snapshotFlow
+import androidx.compose.runtime.snapshotFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -112,12 +112,15 @@ class OperationEditViewModel @Inject constructor(
         }
     }
 
+    @JvmName("changeType")
     fun setType(t: TransactionType) { type = t; selectedCategoryId = null }
     fun setAmount(v: String) { amountText = v; amountError = false }
     fun setAccount(id: String) { selectedAccountId = id }
     fun setToAccount(id: String) { selectedToAccountId = id }
     fun setCategory(id: String) { selectedCategoryId = id }
+    @JvmName("changeNote")
     fun setNote(v: String) { note = v }
+    @JvmName("changeOccurredAt")
     fun setOccurredAt(ms: Long) { occurredAt = ms }
 
     fun save() {

@@ -21,11 +21,14 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import ru.homebuhg.feature.accounts.AccountEditScreen
 import ru.homebuhg.feature.accounts.AccountsScreen
+import ru.homebuhg.feature.budgets.BudgetEditScreen
 import ru.homebuhg.feature.budgets.BudgetsScreen
 import ru.homebuhg.feature.categories.CategoriesScreen
 import ru.homebuhg.feature.home.HomeScreen
 import ru.homebuhg.feature.operations.OperationEditScreen
 import ru.homebuhg.feature.operations.OperationsScreen
+import ru.homebuhg.feature.recurring.RecurringRuleEditScreen
+import ru.homebuhg.feature.recurring.RecurringRulesScreen
 import ru.homebuhg.feature.reports.ReportsScreen
 import ru.homebuhg.feature.scanner.ScannerScreen
 import ru.homebuhg.feature.settings.SettingsScreen
@@ -78,7 +81,8 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
             composable<Destination.Settings> {
                 SettingsScreen(
                     onOpenCategories = { navController.navigate(Destination.Categories) },
-                    onOpenBudgets = { navController.navigate(Destination.Budgets) }
+                    onOpenBudgets = { navController.navigate(Destination.Budgets) },
+                    onOpenRecurringRules = { navController.navigate(Destination.RecurringRules) }
                 )
             }
             composable<Destination.OperationEdit> { entry ->
@@ -99,7 +103,32 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                 CategoriesScreen(onClose = { navController.popBackStack() })
             }
             composable<Destination.Budgets> {
-                BudgetsScreen(onClose = { navController.popBackStack() })
+                BudgetsScreen(
+                    onClose = { navController.popBackStack() },
+                    onAddBudget = { navController.navigate(Destination.BudgetEdit()) },
+                    onEditBudget = { id -> navController.navigate(Destination.BudgetEdit(id)) }
+                )
+            }
+            composable<Destination.BudgetEdit> { entry ->
+                val args = entry.toRoute<Destination.BudgetEdit>()
+                BudgetEditScreen(
+                    budgetId = args.budgetId,
+                    onClose = { navController.popBackStack() }
+                )
+            }
+            composable<Destination.RecurringRules> {
+                RecurringRulesScreen(
+                    onClose = { navController.popBackStack() },
+                    onAdd = { navController.navigate(Destination.RecurringRuleEdit()) },
+                    onEdit = { id -> navController.navigate(Destination.RecurringRuleEdit(id)) }
+                )
+            }
+            composable<Destination.RecurringRuleEdit> { entry ->
+                val args = entry.toRoute<Destination.RecurringRuleEdit>()
+                RecurringRuleEditScreen(
+                    ruleId = args.ruleId,
+                    onClose = { navController.popBackStack() }
+                )
             }
             composable<Destination.Scanner> {
                 ScannerScreen(onClose = { navController.popBackStack() })
