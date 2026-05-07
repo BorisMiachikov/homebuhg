@@ -32,6 +32,8 @@ import ru.homebuhg.feature.recurring.RecurringRulesScreen
 import ru.homebuhg.feature.reports.ReportsScreen
 import ru.homebuhg.feature.scanner.ScannerScreen
 import ru.homebuhg.feature.settings.SettingsScreen
+import ru.homebuhg.feature.sms.SmsRuleEditScreen
+import ru.homebuhg.feature.sms.SmsRulesScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController = rememberNavController()) {
@@ -82,7 +84,8 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                 SettingsScreen(
                     onOpenCategories = { navController.navigate(Destination.Categories) },
                     onOpenBudgets = { navController.navigate(Destination.Budgets) },
-                    onOpenRecurringRules = { navController.navigate(Destination.RecurringRules) }
+                    onOpenRecurringRules = { navController.navigate(Destination.RecurringRules) },
+                    onOpenSmsRules = { navController.navigate(Destination.SmsRules) }
                 )
             }
             composable<Destination.OperationEdit> { entry ->
@@ -129,6 +132,20 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
             composable<Destination.RecurringRuleEdit> { entry ->
                 val args = entry.toRoute<Destination.RecurringRuleEdit>()
                 RecurringRuleEditScreen(
+                    ruleId = args.ruleId,
+                    onClose = { navController.popBackStack() }
+                )
+            }
+            composable<Destination.SmsRules> {
+                SmsRulesScreen(
+                    onClose = { navController.popBackStack() },
+                    onAdd = { navController.navigate(Destination.SmsRuleEdit()) },
+                    onEdit = { id -> navController.navigate(Destination.SmsRuleEdit(id)) }
+                )
+            }
+            composable<Destination.SmsRuleEdit> { entry ->
+                val args = entry.toRoute<Destination.SmsRuleEdit>()
+                SmsRuleEditScreen(
                     ruleId = args.ruleId,
                     onClose = { navController.popBackStack() }
                 )

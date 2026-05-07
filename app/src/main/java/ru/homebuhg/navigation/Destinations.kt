@@ -29,6 +29,8 @@ sealed interface Destination {
     @Serializable data object RecurringRules : Destination
     @Serializable data class RecurringRuleEdit(val ruleId: String? = null) : Destination
     @Serializable data object Scanner : Destination
+    @Serializable data object SmsRules : Destination
+    @Serializable data class SmsRuleEdit(val ruleId: String? = null) : Destination
 }
 
 data class TopLevelDestination(

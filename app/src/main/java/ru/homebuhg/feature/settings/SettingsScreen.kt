@@ -17,6 +17,7 @@ import androidx.compose.material.icons.outlined.Category
 import androidx.compose.material.icons.outlined.Cloud
 import androidx.compose.material.icons.outlined.CloudDone
 import androidx.compose.material.icons.outlined.CloudOff
+import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.Savings
 import androidx.compose.material3.Button
@@ -55,6 +56,7 @@ fun SettingsScreen(
     onOpenCategories: () -> Unit,
     onOpenBudgets: () -> Unit,
     onOpenRecurringRules: () -> Unit,
+    onOpenSmsRules: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -80,6 +82,11 @@ fun SettingsScreen(
                 headlineContent = { Text("Регулярные операции") },
                 leadingContent = { Icon(Icons.Outlined.Repeat, contentDescription = null) },
                 modifier = Modifier.clickable(onClick = onOpenRecurringRules)
+            )
+            ListItem(
+                headlineContent = { Text("Правила SMS") },
+                leadingContent = { Icon(Icons.Outlined.Message, contentDescription = null) },
+                modifier = Modifier.clickable(onClick = onOpenSmsRules)
             )
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
