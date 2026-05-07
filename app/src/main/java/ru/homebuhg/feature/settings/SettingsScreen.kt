@@ -1,5 +1,9 @@
 package ru.homebuhg.feature.settings
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,6 +25,12 @@ import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.Savings
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
+import ru.homebuhg.BuildConfig
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
@@ -62,6 +72,19 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    var smsPermissionGranted by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_SMS) ==
+                    PackageManager.PERMISSION_GRANTED
+        )
+    }
+    val smsPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        smsPermissionGranted = granted
+        if (granted) onOpenSmsRules()
+    }
 
     Scaffold(topBar = { TopAppBar(title = { Text("Настройки") }) }) { padding ->
         Column(
@@ -87,8 +110,20 @@ fun SettingsScreen(
             )
             ListItem(
                 headlineContent = { Text("Правила SMS") },
+                supportingContent = if (!smsPermissionGranted) {
+                    {
+                        Text(
+                            "Требуется разрешение на получение SMS",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                } else null,
                 leadingContent = { Icon(Icons.Outlined.Message, contentDescription = null) },
-                modifier = Modifier.clickable(onClick = onOpenSmsRules)
+                modifier = Modifier.clickable {
+                    if (smsPermissionGranted) onOpenSmsRules()
+                    else smsPermissionLauncher.launch(Manifest.permission.RECEIVE_SMS)
+                }
             )
             ListItem(
                 headlineContent = { Text("Экспорт данных") },
@@ -112,6 +147,14 @@ fun SettingsScreen(
             }
 
             Spacer(Modifier.height(16.dp))
+
+            Text(
+                text = "HomeBuhg v${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            )
         }
     }
 }
