@@ -75,6 +75,7 @@ class OperationEditViewModel @Inject constructor(
     private var userId = "local"
     private var existingTx: TransactionEntity? = null
     private var initialized = false
+    private var sourceType = SourceType.MANUAL
 
     // --- reactive lists ---
     val accounts: StateFlow<List<AccountEntity>> = sessionManager.currentHouseholdId
@@ -91,7 +92,12 @@ class OperationEditViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    fun initialize(operationId: String?) {
+    fun initialize(
+        operationId: String?,
+        prefillAmountMinor: Long = 0L,
+        prefillDateMs: Long = 0L,
+        prefillNote: String = ""
+    ) {
         if (initialized) return
         initialized = true
         viewModelScope.launch {
@@ -107,7 +113,14 @@ class OperationEditViewModel @Inject constructor(
                     selectedToAccountId = tx.toAccountId
                     selectedCategoryId = tx.categoryId
                     note = tx.note ?: ""
+                    sourceType = tx.sourceType
                 }
+            } else if (prefillAmountMinor > 0L) {
+                type = TransactionType.EXPENSE
+                amountText = (prefillAmountMinor / 100.0).toBigDecimal().toPlainString()
+                if (prefillDateMs > 0L) occurredAt = prefillDateMs
+                if (prefillNote.isNotEmpty()) note = prefillNote
+                sourceType = SourceType.QR
             }
         }
     }
@@ -149,7 +162,7 @@ class OperationEditViewModel @Inject constructor(
                 createdBy = userId,
                 createdAt = existingTx?.createdAt ?: now,
                 updatedAt = now,
-                sourceType = SourceType.MANUAL
+                sourceType = sourceType
             )
             withContext(io) {
                 existingTx?.let { reverseBalance(it) }

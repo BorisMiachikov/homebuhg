@@ -55,10 +55,13 @@ import ru.homebuhg.core.data.database.entity.TransactionType
 @Composable
 fun OperationEditScreen(
     operationId: String?,
+    prefillAmountMinor: Long = 0L,
+    prefillDateMs: Long = 0L,
+    prefillNote: String = "",
     onClose: () -> Unit,
     viewModel: OperationEditViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(operationId) { viewModel.initialize(operationId) }
+    LaunchedEffect(operationId) { viewModel.initialize(operationId, prefillAmountMinor, prefillDateMs, prefillNote) }
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {

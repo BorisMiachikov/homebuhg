@@ -89,6 +89,9 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                 val args = entry.toRoute<Destination.OperationEdit>()
                 OperationEditScreen(
                     operationId = args.operationId,
+                    prefillAmountMinor = args.prefillAmountMinor,
+                    prefillDateMs = args.prefillDateMs,
+                    prefillNote = args.prefillNote,
                     onClose = { navController.popBackStack() }
                 )
             }
@@ -131,7 +134,19 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                 )
             }
             composable<Destination.Scanner> {
-                ScannerScreen(onClose = { navController.popBackStack() })
+                ScannerScreen(
+                    onClose = { navController.popBackStack() },
+                    onScanned = { amountMinor, dateMs, note ->
+                        navController.popBackStack()
+                        navController.navigate(
+                            Destination.OperationEdit(
+                                prefillAmountMinor = amountMinor,
+                                prefillDateMs = dateMs,
+                                prefillNote = note
+                            )
+                        )
+                    }
+                )
             }
         }
     }
