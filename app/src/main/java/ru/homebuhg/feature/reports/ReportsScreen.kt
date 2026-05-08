@@ -48,12 +48,17 @@ import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberColumnCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import androidx.compose.ui.graphics.toArgb
+import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
+import com.patrykandpatrick.vico.core.common.Fill
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
+import com.patrykandpatrick.vico.core.cartesian.layer.ColumnCartesianLayer
 import ru.homebuhg.core.common.Money
+import ru.homebuhg.core.common.format
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -145,12 +150,12 @@ private fun DynamicsTab(
         } else {
             val labels = uiState.monthBars.map { it.label }
             val xFormatter = remember(labels) {
-                CartesianValueFormatter { value, _, _ ->
+                CartesianValueFormatter { _, value, _ ->
                     labels.getOrElse(value.toInt()) { "" }
                 }
             }
             val yFormatter = remember {
-                CartesianValueFormatter { value, _, _ ->
+                CartesianValueFormatter { _, value, _ ->
                     when {
                         value >= 1_000_000 -> "${(value / 1_000_000).toLong()}M ₽"
                         value >= 1_000 -> "${(value / 1_000).toLong()}k ₽"
@@ -163,9 +168,16 @@ private fun DynamicsTab(
                 Column(modifier = Modifier.padding(16.dp)) {
                     ChartLegend()
                     Spacer(Modifier.height(8.dp))
+                    val incomeColor = MaterialTheme.colorScheme.primary.toArgb()
+                    val expenseColor = MaterialTheme.colorScheme.error.toArgb()
                     CartesianChartHost(
                         chart = rememberCartesianChart(
-                            rememberColumnCartesianLayer(),
+                            rememberColumnCartesianLayer(
+                                ColumnCartesianLayer.ColumnProvider.series(
+                                    rememberLineComponent(fill = Fill(incomeColor), thickness = 16.dp),
+                                    rememberLineComponent(fill = Fill(expenseColor), thickness = 16.dp)
+                                )
+                            ),
                             startAxis = VerticalAxis.rememberStart(valueFormatter = yFormatter),
                             bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = xFormatter),
                         ),

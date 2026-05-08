@@ -20,7 +20,8 @@ sealed interface Destination {
         val operationId: String? = null,
         val prefillAmountMinor: Long = 0L,
         val prefillDateMs: Long = 0L,
-        val prefillNote: String = ""
+        val prefillNote: String = "",
+        val initialType: String? = null
     ) : Destination
     @Serializable data class AccountEdit(val accountId: String? = null) : Destination
     @Serializable data object Categories : Destination

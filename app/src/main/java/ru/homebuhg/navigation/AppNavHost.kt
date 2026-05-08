@@ -64,6 +64,7 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         ) {
             composable<Destination.Home> {
                 HomeScreen(
+                    onAddExpense = { navController.navigate(Destination.OperationEdit(initialType = "EXPENSE")) },
                     onAddOperation = { navController.navigate(Destination.OperationEdit()) },
                     onOpenScanner = { navController.navigate(Destination.Scanner) }
                 )
@@ -100,6 +101,7 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                     prefillAmountMinor = args.prefillAmountMinor,
                     prefillDateMs = args.prefillDateMs,
                     prefillNote = args.prefillNote,
+                    initialType = args.initialType,
                     onClose = { navController.popBackStack() }
                 )
             }

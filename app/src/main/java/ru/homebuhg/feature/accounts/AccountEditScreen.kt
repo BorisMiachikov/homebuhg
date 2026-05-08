@@ -24,6 +24,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -96,11 +97,6 @@ fun AccountEditScreen(
                         IconButton(onClick = { showDeleteDialog = true }) {
                             Icon(Icons.Outlined.Delete, "Архивировать")
                         }
-                    }
-                    if (viewModel.isLoading) {
-                        CircularProgressIndicator(modifier = Modifier.padding(end = 16.dp))
-                    } else {
-                        TextButton(onClick = viewModel::save) { Text("Сохранить") }
                     }
                 }
             )
@@ -184,6 +180,19 @@ fun AccountEditScreen(
                         }
                     }
                 }
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            Button(
+                onClick = viewModel::save,
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !viewModel.isLoading
+            ) {
+                if (viewModel.isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.padding(end = 8.dp))
+                }
+                Text("Сохранить")
             }
         }
     }

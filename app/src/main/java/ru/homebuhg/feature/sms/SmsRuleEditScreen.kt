@@ -83,7 +83,7 @@ fun SmsRuleEditScreen(
                 typeTabs.forEachIndexed { i, (t, label) ->
                     Tab(
                         selected = i == selectedTab,
-                        onClick = { viewModel.setType(t) },
+                        onClick = { viewModel.updateType(t) },
                         text = { Text(label) }
                     )
                 }
@@ -91,7 +91,7 @@ fun SmsRuleEditScreen(
 
             OutlinedTextField(
                 value = viewModel.senderPattern,
-                onValueChange = viewModel::setSenderPattern,
+                onValueChange = viewModel::updateSenderPattern,
                 label = { Text("Паттерн отправителя") },
                 placeholder = { Text("Sberbank|900") },
                 supportingText = { Text("Regex для номера/имени отправителя") },
@@ -101,7 +101,7 @@ fun SmsRuleEditScreen(
 
             OutlinedTextField(
                 value = viewModel.bodyRegex,
-                onValueChange = viewModel::setBodyRegex,
+                onValueChange = viewModel::updateBodyRegex,
                 label = { Text("Регулярное выражение") },
                 placeholder = { Text("""(?<amount>[\d ]+[.,]\d{2}) руб""") },
                 supportingText = { Text("Regex с именованными группами для тела SMS") },
@@ -111,7 +111,7 @@ fun SmsRuleEditScreen(
 
             OutlinedTextField(
                 value = viewModel.amountGroup,
-                onValueChange = viewModel::setAmountGroup,
+                onValueChange = viewModel::updateAmountGroup,
                 label = { Text("Группа суммы") },
                 placeholder = { Text("amount") },
                 supportingText = { Text("Имя именованной группы (?<name>...) для суммы") },
@@ -121,7 +121,7 @@ fun SmsRuleEditScreen(
 
             OutlinedTextField(
                 value = viewModel.merchantGroup,
-                onValueChange = viewModel::setMerchantGroup,
+                onValueChange = viewModel::updateMerchantGroup,
                 label = { Text("Группа магазина (опционально)") },
                 placeholder = { Text("merchant") },
                 supportingText = { Text("Имя именованной группы для названия магазина") },

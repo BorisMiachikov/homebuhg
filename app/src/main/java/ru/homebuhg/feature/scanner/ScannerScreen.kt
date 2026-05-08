@@ -215,17 +215,17 @@ private fun QrScannerOverlay(modifier: Modifier = Modifier) {
         val white = Color.White
 
         // Верхний-левый
-        drawLine(white, Offset(left, top + corner), Offset(left, top), stroke)
-        drawLine(white, Offset(left, top), Offset(left + corner, top), stroke)
+        drawLine(white, Offset(left, top + corner), Offset(left, top), strokeWidth = stroke.width, cap = stroke.cap)
+        drawLine(white, Offset(left, top), Offset(left + corner, top), strokeWidth = stroke.width, cap = stroke.cap)
         // Верхний-правый
-        drawLine(white, Offset(left + squareSize - corner, top), Offset(left + squareSize, top), stroke)
-        drawLine(white, Offset(left + squareSize, top), Offset(left + squareSize, top + corner), stroke)
+        drawLine(white, Offset(left + squareSize - corner, top), Offset(left + squareSize, top), strokeWidth = stroke.width, cap = stroke.cap)
+        drawLine(white, Offset(left + squareSize, top), Offset(left + squareSize, top + corner), strokeWidth = stroke.width, cap = stroke.cap)
         // Нижний-левый
-        drawLine(white, Offset(left, top + squareSize - corner), Offset(left, top + squareSize), stroke)
-        drawLine(white, Offset(left, top + squareSize), Offset(left + corner, top + squareSize), stroke)
+        drawLine(white, Offset(left, top + squareSize - corner), Offset(left, top + squareSize), strokeWidth = stroke.width, cap = stroke.cap)
+        drawLine(white, Offset(left, top + squareSize), Offset(left + corner, top + squareSize), strokeWidth = stroke.width, cap = stroke.cap)
         // Нижний-правый
-        drawLine(white, Offset(left + squareSize - corner, top + squareSize), Offset(left + squareSize, top + squareSize), stroke)
-        drawLine(white, Offset(left + squareSize, top + squareSize), Offset(left + squareSize, top + squareSize - corner), stroke)
+        drawLine(white, Offset(left + squareSize - corner, top + squareSize), Offset(left + squareSize, top + squareSize), strokeWidth = stroke.width, cap = stroke.cap)
+        drawLine(white, Offset(left + squareSize, top + squareSize), Offset(left + squareSize, top + squareSize - corner), strokeWidth = stroke.width, cap = stroke.cap)
     }
 }
 

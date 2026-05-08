@@ -51,6 +51,7 @@ import ru.homebuhg.core.data.database.entity.TransactionType
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
+    onAddExpense: () -> Unit,
     onAddOperation: () -> Unit,
     onOpenScanner: () -> Unit
 ) {
@@ -85,7 +86,7 @@ fun HomeScreen(
                     Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    FilledTonalButton(onClick = onAddOperation, modifier = Modifier.weight(1f)) {
+                    FilledTonalButton(onClick = onAddExpense, modifier = Modifier.weight(1f)) {
                         Icon(Icons.Outlined.Add, null, Modifier.size(18.dp))
                         Spacer(Modifier.width(4.dp))
                         Text("Расход")

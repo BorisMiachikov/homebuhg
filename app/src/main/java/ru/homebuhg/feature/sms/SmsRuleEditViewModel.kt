@@ -72,11 +72,11 @@ class SmsRuleEditViewModel @Inject constructor(
         }
     }
 
-    fun setSenderPattern(v: String) { senderPattern = v }
-    fun setBodyRegex(v: String) { bodyRegex = v }
-    fun setAmountGroup(v: String) { amountGroup = v }
-    fun setMerchantGroup(v: String) { merchantGroup = v }
-    fun setType(t: TransactionType) { type = t }
+    fun updateSenderPattern(v: String) { senderPattern = v }
+    fun updateBodyRegex(v: String) { bodyRegex = v }
+    fun updateAmountGroup(v: String) { amountGroup = v }
+    fun updateMerchantGroup(v: String) { merchantGroup = v }
+    fun updateType(t: TransactionType) { type = t }
     fun setAccount(id: String?) { selectedAccountId = id }
 
     fun save() {
