@@ -2,6 +2,7 @@ package ru.homebuhg.feature.operations
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -23,11 +24,13 @@ import ru.homebuhg.core.common.nowMillis
 import ru.homebuhg.core.data.database.entity.AccountEntity
 import ru.homebuhg.core.data.database.entity.CategoryEntity
 import ru.homebuhg.core.data.database.entity.CategoryType
+import ru.homebuhg.core.data.database.entity.ReceiptItemEntity
 import ru.homebuhg.core.data.database.entity.SourceType
 import ru.homebuhg.core.data.database.entity.TransactionEntity
 import ru.homebuhg.core.data.database.entity.TransactionType
 import ru.homebuhg.core.data.repository.AccountRepository
 import ru.homebuhg.core.data.repository.CategoryRepository
+import ru.homebuhg.core.data.repository.ReceiptItemRepository
 import ru.homebuhg.core.data.repository.TransactionRepository
 import ru.homebuhg.core.di.IoDispatcher
 import ru.homebuhg.core.domain.SessionManager
@@ -40,6 +43,7 @@ class OperationEditViewModel @Inject constructor(
     private val transactionRepository: TransactionRepository,
     private val accountRepository: AccountRepository,
     private val categoryRepository: CategoryRepository,
+    private val receiptItemRepository: ReceiptItemRepository,
     @IoDispatcher private val io: CoroutineDispatcher
 ) : ViewModel() {
 
@@ -66,6 +70,11 @@ class OperationEditViewModel @Inject constructor(
     var amountError by mutableStateOf(false)
         private set
     var isLoading by mutableStateOf(false)
+        private set
+
+    // --- items state ---
+    val items = mutableStateListOf<ReceiptItemEntity>()
+    var knownNames by mutableStateOf<List<String>>(emptyList())
         private set
 
     private val _events = Channel<Event>()
@@ -96,13 +105,18 @@ class OperationEditViewModel @Inject constructor(
         operationId: String?,
         prefillAmountMinor: Long = 0L,
         prefillDateMs: Long = 0L,
-        prefillNote: String = ""
+        prefillNote: String = "",
+        initialType: String? = null
     ) {
         if (initialized) return
         initialized = true
+        if (initialType != null && operationId == null) {
+            runCatching { TransactionType.valueOf(initialType) }.getOrNull()?.let { type = it }
+        }
         viewModelScope.launch {
             householdId = sessionManager.currentHouseholdId.first()
             userId = sessionManager.currentUserId.first()
+            knownNames = receiptItemRepository.allDistinctNames()
             if (operationId != null) {
                 withContext(io) { transactionRepository.getById(operationId) }?.let { tx ->
                     existingTx = tx
@@ -115,6 +129,8 @@ class OperationEditViewModel @Inject constructor(
                     note = tx.note ?: ""
                     sourceType = tx.sourceType
                 }
+                val existing = receiptItemRepository.observe(operationId).first()
+                items.addAll(existing)
             } else if (prefillAmountMinor > 0L) {
                 type = TransactionType.EXPENSE
                 amountText = (prefillAmountMinor / 100.0).toBigDecimal().toPlainString()
@@ -135,6 +151,16 @@ class OperationEditViewModel @Inject constructor(
     fun setNote(v: String) { note = v }
     @JvmName("changeOccurredAt")
     fun setOccurredAt(ms: Long) { occurredAt = ms }
+
+    fun addItem(item: ReceiptItemEntity) { items.add(item) }
+    fun updateItem(item: ReceiptItemEntity) {
+        val i = items.indexOfFirst { it.id == item.id }
+        if (i >= 0) items[i] = item
+    }
+    fun removeItem(id: String) { items.removeAll { it.id == id } }
+
+    suspend fun getLastPriceForName(name: String): Long? =
+        receiptItemRepository.getLastPriceForName(name)
 
     fun save() {
         val amountMinor = amountText.replace(",", ".")
@@ -169,6 +195,10 @@ class OperationEditViewModel @Inject constructor(
                 transactionRepository.upsert(newTx)
                 applyBalance(newTx)
             }
+            receiptItemRepository.replaceAll(
+                newTx.id,
+                items.map { it.copy(transactionId = newTx.id) }
+            )
             isLoading = false
             _events.send(Event.Saved)
         }

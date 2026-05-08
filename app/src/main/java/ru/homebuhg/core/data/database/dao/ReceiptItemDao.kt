@@ -22,4 +22,10 @@ interface ReceiptItemDao {
 
     @Query("DELETE FROM receipt_items WHERE transactionId = :transactionId")
     suspend fun deleteByTransaction(transactionId: String)
+
+    @Query("SELECT DISTINCT name FROM receipt_items ORDER BY name")
+    suspend fun allDistinctNames(): List<String>
+
+    @Query("SELECT priceMinor FROM receipt_items WHERE name = :name ORDER BY rowid DESC LIMIT 1")
+    suspend fun getLastPriceForName(name: String): Long?
 }
