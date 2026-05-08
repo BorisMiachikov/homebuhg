@@ -105,10 +105,14 @@ class OperationEditViewModel @Inject constructor(
         operationId: String?,
         prefillAmountMinor: Long = 0L,
         prefillDateMs: Long = 0L,
-        prefillNote: String = ""
+        prefillNote: String = "",
+        initialType: String? = null
     ) {
         if (initialized) return
         initialized = true
+        if (initialType != null && operationId == null) {
+            runCatching { TransactionType.valueOf(initialType) }.getOrNull()?.let { type = it }
+        }
         viewModelScope.launch {
             householdId = sessionManager.currentHouseholdId.first()
             userId = sessionManager.currentUserId.first()

@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -72,10 +73,11 @@ fun OperationEditScreen(
     prefillAmountMinor: Long = 0L,
     prefillDateMs: Long = 0L,
     prefillNote: String = "",
+    initialType: String? = null,
     onClose: () -> Unit,
     viewModel: OperationEditViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(operationId) { viewModel.initialize(operationId, prefillAmountMinor, prefillDateMs, prefillNote) }
+    LaunchedEffect(operationId) { viewModel.initialize(operationId, prefillAmountMinor, prefillDateMs, prefillNote, initialType) }
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
@@ -149,11 +151,6 @@ fun OperationEditScreen(
                         IconButton(onClick = { showDeleteDialog = true }) {
                             Icon(Icons.Outlined.Delete, contentDescription = "Удалить")
                         }
-                    }
-                    if (viewModel.isLoading) {
-                        CircularProgressIndicator(modifier = Modifier.padding(end = 16.dp))
-                    } else {
-                        TextButton(onClick = viewModel::save) { Text("Сохранить") }
                     }
                 }
             )
@@ -298,6 +295,19 @@ fun OperationEditScreen(
                     onClick = { editingItem = null; showItemDialog = true },
                     modifier = Modifier.fillMaxWidth()
                 ) { Text("+ Добавить позицию") }
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            Button(
+                onClick = viewModel::save,
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !viewModel.isLoading
+            ) {
+                if (viewModel.isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.padding(end = 8.dp))
+                }
+                Text("Сохранить")
             }
         }
     }
