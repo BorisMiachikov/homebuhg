@@ -152,12 +152,20 @@ class OperationEditViewModel @Inject constructor(
     @JvmName("changeOccurredAt")
     fun setOccurredAt(ms: Long) { occurredAt = ms }
 
-    fun addItem(item: ReceiptItemEntity) { items.add(item) }
+    fun addItem(item: ReceiptItemEntity) { items.add(item); syncAmountFromItems() }
     fun updateItem(item: ReceiptItemEntity) {
         val i = items.indexOfFirst { it.id == item.id }
         if (i >= 0) items[i] = item
+        syncAmountFromItems()
     }
-    fun removeItem(id: String) { items.removeAll { it.id == id } }
+    fun removeItem(id: String) { items.removeAll { it.id == id }; syncAmountFromItems() }
+
+    private fun syncAmountFromItems() {
+        if (items.isEmpty()) return
+        val totalMinor = items.sumOf { (it.priceMinor * it.qty).toLong() }
+        amountText = (totalMinor / 100.0).toBigDecimal().stripTrailingZeros().toPlainString()
+        amountError = false
+    }
 
     suspend fun getLastPriceForName(name: String): Long? =
         receiptItemRepository.getLastPriceForName(name)

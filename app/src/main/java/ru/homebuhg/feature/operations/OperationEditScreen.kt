@@ -379,6 +379,8 @@ private fun ItemRow(
     }
 }
 
+private val COMMON_UNITS = listOf("шт", "кг", "г", "л", "мл", "м", "упак", "пачка", "пара", "рул")
+
 private fun formatQty(qty: Double): String =
     if (qty == qty.toLong().toDouble()) qty.toLong().toString() else "%.3f".format(qty).trimEnd('0')
 
@@ -397,6 +399,7 @@ private fun AddEditItemDialog(
     var priceText by remember { mutableStateOf(if (initial != null) "%.2f".format(initial.priceMinor / 100.0) else "") }
     var qtyText by remember { mutableStateOf(if (initial != null) formatQty(initial.qty) else "1") }
     var nameExpanded by remember { mutableStateOf(false) }
+    var unitExpanded by remember { mutableStateOf(false) }
 
     val filteredNames = remember(nameText, knownNames) {
         if (nameText.isBlank()) knownNames
@@ -448,14 +451,38 @@ private fun AddEditItemDialog(
                     }
                 }
 
-                // Ед. изм.
-                OutlinedTextField(
-                    value = unitText,
-                    onValueChange = { unitText = it },
-                    label = { Text("Ед. изм.") },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
-                )
+                // Ед. изм. — справочник + свободный ввод
+                ExposedDropdownMenuBox(
+                    expanded = unitExpanded,
+                    onExpandedChange = { unitExpanded = it }
+                ) {
+                    OutlinedTextField(
+                        value = unitText,
+                        onValueChange = { unitText = it; unitExpanded = true },
+                        label = { Text("Ед. изм.") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(unitExpanded) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(MenuAnchorType.PrimaryEditable),
+                        singleLine = true
+                    )
+                    val filteredUnits = COMMON_UNITS.filter {
+                        unitText.isBlank() || it.startsWith(unitText, ignoreCase = true)
+                    }
+                    if (filteredUnits.isNotEmpty()) {
+                        ExposedDropdownMenu(
+                            expanded = unitExpanded,
+                            onDismissRequest = { unitExpanded = false }
+                        ) {
+                            filteredUnits.forEach { unit ->
+                                DropdownMenuItem(
+                                    text = { Text(unit) },
+                                    onClick = { unitText = unit; unitExpanded = false }
+                                )
+                            }
+                        }
+                    }
+                }
 
                 // Цена
                 OutlinedTextField(
