@@ -269,11 +269,18 @@ fun OperationEditScreen(
                 Text("Позиции", style = MaterialTheme.typography.labelLarge)
                 Spacer(Modifier.height(8.dp))
 
-                if (viewModel.items.isNotEmpty()) {
-                    // Header row
-                    ItemsTableHeader()
-                    HorizontalDivider()
+                // Шапка таблицы — всегда видна
+                ItemsTableHeader()
+                HorizontalDivider()
 
+                if (viewModel.items.isEmpty()) {
+                    Text(
+                        "Нет позиций. Нажмите «+ Добавить позицию».",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                } else {
                     viewModel.items.forEach { item ->
                         ItemRow(
                             item = item,
